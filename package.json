@@ -4,8 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun dev",
-    "build": "bun build ./src/index.ts --outdir ./dist",
-    "start": "bun src/index.ts"
+    "build": "bun build ./src/page.jsx --outdir ./dist",
+    "start": "bun src/page.jsx"
   },
   "dependencies": {
     "lucide-react": "^0.364.0",
