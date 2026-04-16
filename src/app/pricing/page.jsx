@@ -1,128 +1,145 @@
 'use client';
 import React, { useState } from 'react';
-import { Terminal, Shield, Radar, ChevronRight, Zap, Database, Server } from 'lucide-react';
-import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Shield, Radar, Zap, CheckCircle2 } from 'lucide-react';
 
-export default function HomePage() {
-  // Terminal Demo Logic
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('idle'); // idle, scanning, locked
-  const [logs, setLogs] = useState([]);
+export default function PremiumPricing() {
+  const [sliderIndex, setSliderIndex] = useState(0);
 
-  const startScan = (e) => {
-    e.preventDefault();
-    if (status === 'locked' || !email) return;
+  const pricingTiers = [
+    { name: 'Starter', price: 29, iCredits: 1500, dCredits: 365 },
+    { name: 'Growth', price: 79, iCredits: 5000, dCredits: 1250 },
+    { name: 'Scale', price: 149, iCredits: 15000, dCredits: 3750 },
+    { name: 'Pro', price: 499, iCredits: 100000, dCredits: 15000 },
+    { name: 'Agency', price: 799, iCredits: 200000, dCredits: 30000 }
+  ];
 
-    setStatus('scanning');
-    setLogs(['> Initializing Port 25 Deep-Scan...']);
-
-    // This simulates the Heuristic Decoy Protocol pings
-    setTimeout(() => setLogs(prev => [...prev, '> Pinging fake_trap@domain.com... [BLOCK]']), 1000);
-    setTimeout(() => setLogs(prev => [...prev, '> Pinging alpha_992@domain.com... [BLOCK]']), 2000);
-    setTimeout(() => {
-      setLogs(prev => [...prev, '> Executing direct SMTP handshake...', '> Result: SAFE TO SEND', '', '> [SYSTEM LOCK] IP Limit Reached.']);
-      setStatus('locked');
-    }, 3500);
+  const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
   };
 
   return (
-    <div className="relative pb-20">
-      {/* HERO SECTION */}
-      <section className="px-6 pt-16 md:pt-32 max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-xs font-black text-sky-400 uppercase tracking-widest mb-6">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Dallas Core Infrastructure Online
+    <div className="relative min-h-screen bg-[#03050a] py-32 px-6 overflow-hidden font-sans">
+      {/* BACKGROUND GLOWS */}
+      <div className="absolute top-[10%] left-[50%] translate-x-[-50%] w-[800px] h-[400px] bg-sky-600/15 rounded-full blur-[120px] pointer-events-none"></div>
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        <motion.div initial="hidden" animate="visible" variants={fadeUp} className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-black text-emerald-400 uppercase tracking-widest mb-6">
+            <CheckCircle2 className="w-4 h-4" /> 100% Credit Rollover
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.05] mb-6 italic uppercase">
-            Never <span className="text-sky-500">Bounce</span><br/>Again.
-          </h1>
-          <p className="text-xl text-slate-400 mb-10 leading-relaxed max-w-lg">
-            Stop using API wrappers. Mailvah runs a proprietary Heuristic Decoy Protocol on bare-metal Dallas servers to map firewall logic and guarantee deliverability.
+          <h1 className="text-5xl md:text-6xl font-black text-white mb-6 tracking-tight">Scale Your Engine.</h1>
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+            Drag the slider to adjust your bare-metal processing power. Hard limits on extraction, massive volume for verification.
           </p>
-          <div className="flex flex-wrap gap-4">
-            <a href="https://app.mailvah.com/register" className="bg-sky-500 hover:bg-sky-400 text-slate-950 px-8 py-4 rounded-xl font-black text-lg transition-all shadow-[0_0_30px_rgba(56,189,248,0.3)] uppercase">
-              Access Command Center
-            </a>
-          </div>
-        </div>
+        </motion.div>
 
-        {/* LIVE TERMINAL DEMO */}
-        <div className="bg-[#0a0f1c] border border-slate-800 rounded-2xl overflow-hidden shadow-2xl font-mono text-sm">
-          <div className="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-red-500/50"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500/50"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500/50"></div>
-            </div>
-            <span className="text-slate-500 text-[10px] uppercase font-bold tracking-tighter">Heuristic_Engine_v4.0</span>
-          </div>
-          <div className="p-6 min-h-[300px]">
-            <p className="text-slate-500 mb-4">// Test the decoy protocol. Limit: 1 scan per IP.</p>
-            <form onSubmit={startScan} className="flex gap-3 mb-6">
-              <span className="text-sky-500 font-bold">➜</span>
-              <input 
-                type="email" 
-                placeholder="Enter lead email..." 
-                className="bg-transparent border-none outline-none text-white flex-1"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={status !== 'idle'}
-              />
-              {status === 'idle' && (
-                <button className="text-sky-500 font-bold hover:text-white uppercase text-xs">Scan</button>
-              )}
-            </form>
-            <div className="space-y-2">
-              {logs.map((log, i) => (
-                <div key={i} className={log.includes('SAFE') ? 'text-emerald-400 font-bold' : log.includes('BLOCK') ? 'text-red-400/70' : 'text-slate-400'}>
-                  {log}
-                </div>
-              ))}
-              {status === 'scanning' && <div className="w-2 h-4 bg-sky-500 animate-pulse inline-block"></div>}
-              {status === 'locked' && (
-                <a href="https://app.mailvah.com/register" className="mt-6 block text-center p-3 rounded bg-sky-500/10 border border-sky-500/30 text-sky-400 font-bold hover:bg-sky-500/20 transition-all">
-                  Sign up to unlock 115 free credits
-                </a>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* THE BENTO BOX FEATURES */}
-      <section className="px-6 py-32 max-w-7xl mx-auto">
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="md:col-span-2 bg-slate-900/50 border border-slate-800 p-8 rounded-3xl relative overflow-hidden group">
-            <Shield className="w-12 h-12 text-sky-500 mb-6 group-hover:scale-110 transition-transform" />
-            <h3 className="text-2xl font-black text-white mb-4 uppercase">Integrity Vault (Wash)</h3>
-            <p className="text-slate-400 max-w-md">Our Port 25 Deep-Scan engine maps catch-all servers by firing decoy pings before the real verification. Near-zero bounce rates guaranteed.</p>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/5 blur-[60px] rounded-full"></div>
-          </div>
+        {/* INTERACTIVE GLASS SLIDER CARD */}
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5, delay: 0.2 }} className="bg-white/[0.02] backdrop-blur-2xl border border-white/10 shadow-[0_0_50px_rgba(56,189,248,0.05)] rounded-[3rem] p-8 md:p-14 mb-16 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sky-500/10 blur-[80px] rounded-full pointer-events-none"></div>
           
-          <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl group">
-            <Radar className="w-12 h-12 text-emerald-500 mb-6 group-hover:rotate-12 transition-transform" />
-            <h3 className="text-2xl font-black text-white mb-4 uppercase">Discovery Vault</h3>
-            <p className="text-slate-400">Scrape live B2B data via our global proxy grid. Fresh leads, sourced in real-time.</p>
-          </div>
+          <div className="grid md:grid-cols-2 gap-16 items-center relative z-10">
+            {/* Left Side: Slider & Price */}
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest">
+                  {pricingTiers[sliderIndex].name} Tier
+                </span>
+              </div>
+              
+              <div className="text-7xl font-black text-white mb-2 tracking-tighter flex items-end gap-2">
+                ${pricingTiers[sliderIndex].price}
+                <span className="text-2xl text-slate-500 font-medium pb-2">/mo</span>
+              </div>
+              <p className="text-slate-400 text-sm mb-12">Dedicated processing on our Dallas, TX bare-metal nodes.</p>
 
-          <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl group">
-            <Server className="w-12 h-12 text-purple-500 mb-6 group-hover:-translate-y-2 transition-transform" />
-            <h3 className="text-2xl font-black text-white mb-4 uppercase">Dallas Nodes</h3>
-            <p className="text-slate-400">No cloud functions. We own the bare-metal servers for ultra-low latency processing.</p>
-          </div>
+              {/* The Draggable Bar */}
+              <div className="mb-10 relative">
+                <div className="flex justify-between text-xs font-bold text-slate-500 mb-4 uppercase tracking-widest">
+                  <span>Starter</span>
+                  <span>Agency</span>
+                </div>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max={pricingTiers.length - 1} 
+                  step="1" 
+                  value={sliderIndex} 
+                  onChange={(e) => setSliderIndex(parseInt(e.target.value))} 
+                  className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500 hover:accent-sky-400 transition-all shadow-[0_0_20px_rgba(56,189,248,0.5)] relative z-10"
+                />
+              </div>
 
-          <div className="md:col-span-2 bg-gradient-to-br from-sky-900/20 to-slate-900 border border-slate-800 p-8 rounded-3xl flex flex-col md:flex-row items-center gap-8">
-            <div className="flex-1">
-              <h3 className="text-2xl font-black text-white mb-4 uppercase">100% Credit Rollover</h3>
-              <p className="text-slate-400">We respect your budget. As long as you have an active plan, your unused credits never expire. Ever.</p>
+              <a href="https://app.mailvah.com/register" className="block text-center w-full py-4 rounded-xl font-black bg-sky-500 text-slate-900 hover:bg-sky-400 transition-all hover:scale-[1.02] shadow-[0_0_30px_rgba(56,189,248,0.3)] uppercase tracking-wide">
+                Deploy {pricingTiers[sliderIndex].name} Engine
+              </a>
             </div>
-            <Link href="/pricing" className="bg-white text-slate-950 px-6 py-3 rounded-xl font-black uppercase text-sm flex items-center gap-2 hover:bg-sky-400 transition-colors">
-              See Pricing <ChevronRight className="w-4 h-4" />
-            </Link>
+
+            {/* Right Side: Dynamic Feature List */}
+            <div className="bg-black/40 backdrop-blur-md p-8 rounded-[2rem] border border-white/5">
+              <h4 className="text-white font-bold mb-8 text-lg border-b border-white/10 pb-4">Monthly Vault Allocations</h4>
+              
+              <div className="mb-10">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-slate-300 font-bold flex items-center gap-3">
+                    <Shield className="w-6 h-6 text-emerald-400"/> Integrity Credits
+                  </span>
+                  <motion.span 
+                    key={pricingTiers[sliderIndex].iCredits}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-emerald-400 font-black text-3xl tracking-tight"
+                  >
+                    {pricingTiers[sliderIndex].iCredits.toLocaleString()}
+                  </motion.span>
+                </div>
+                <p className="text-sm text-slate-500 ml-9">For deep-scanning and washing existing lists.</p>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-slate-300 font-bold flex items-center gap-3">
+                    <Radar className="w-6 h-6 text-sky-400"/> Discovery Credits
+                  </span>
+                  <motion.span 
+                    key={pricingTiers[sliderIndex].dCredits}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sky-400 font-black text-3xl tracking-tight"
+                  >
+                    {pricingTiers[sliderIndex].dCredits.toLocaleString()}
+                  </motion.span>
+                </div>
+                <p className="text-sm text-slate-500 ml-9">For live extraction of fresh B2B targets.</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </motion.div>
+
+        {/* REFILL STATION (Glassmorphism Cards) */}
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+           <div className="text-center mb-10">
+             <h3 className="text-3xl font-black text-white mb-4">The Refill Station</h3>
+             <p className="text-slate-400 max-w-xl mx-auto">Burned through your Discovery limits? Don't upgrade your whole plan. Instantly top up your vault right from the dashboard.</p>
+           </div>
+
+           <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { name: 'Scout Pack', price: 49, credits: '1,225', color: 'text-sky-400', border: 'hover:border-sky-500/50' },
+                { name: 'Hunter Pack', price: 149, credits: '3,750', color: 'text-indigo-400', border: 'border-indigo-500/30 shadow-[0_0_30px_rgba(99,102,241,0.1)]' },
+                { name: 'Commander Pack', price: 399, credits: '10,000', color: 'text-emerald-400', border: 'hover:border-emerald-500/50' }
+              ].map((pack, i) => (
+                <motion.div key={i} variants={fadeUp} className={`bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 transition-all duration-300 hover:-translate-y-2 ${pack.border}`}>
+                  <div className="text-white font-bold mb-2 flex items-center gap-2"><Zap className={`w-4 h-4 ${pack.color}`} /> {pack.name}</div>
+                  <div className="text-4xl font-black text-white mb-6 tracking-tight">${pack.price}</div>
+                  <div className="text-sm text-slate-400 mb-8">Instantly adds <span className={`${pack.color} font-bold`}>+{pack.credits}</span> Discovery Credits.</div>
+                  <a href="https://app.mailvah.com/register" className="block text-center w-full py-3 rounded-xl font-bold bg-white/5 text-white hover:bg-white/10 transition-colors">Add to Vault</a>
+                </motion.div>
+              ))}
+           </div>
+        </motion.div>
+      </div>
     </div>
   );
 }
